@@ -3,11 +3,14 @@ let yBolinha = 200;
 let diametro = 20;
 let raio = diametro / 2;
 let movimentoRaqueteAtivo = true;
-
+let colidiu = false;
+let player2mov = false;
+let ia = true;
+let rebatidas = 0;
 
 //velocidade bolinha
 let velocidadexBolinha = 5;
-let velocidadeyBolinha = 2;
+let velocidadeyBolinha = 5;
 
 //tamanho raquete
 let raqueteComprimento = 13;
@@ -33,8 +36,10 @@ function draw() { //chamando todas as funções
   movimentoRaquete();
   pontuacao();
   limiteRaquete();
-  colisaoRaquete();
-  ia();
+  colisaoRaquete1();
+  colisaoRaquete2();
+  player2();
+  inteligenciaArtificial();
 }
 
 function fundo(){
@@ -55,11 +60,13 @@ function moverBolinha(){ //função para mover a bolinha
   if (xBolinha > width + 300){ //se a bolinha for maior que o width, a sua velocidade será negativa e a pontuação vai incrementar 1 ponto
       velocidadexBolinha *=-1;
       pontos1 ++;
+      rebatidas = 0;
       xBolinha = width / 2;
       yBolinha = height / 2;
       }else if(xBolinha < width - 900){
         velocidadexBolinha *=-1;
         pontos2 ++;
+        rebatidas = 0;
         xBolinha = width / 2;
         yBolinha = height / 2;
       }
@@ -102,12 +109,6 @@ function movimentoRaquete(){ // melhorar
   if (keyIsDown(DOWN_ARROW)){
     yRaquete1 += 10;
   }
-  if (keyIsDown('87')){
-    yRaquete2 -= 10;
-  }
-  if (keyIsDown('83')){
-    yRaquete2 += 10;
-  }
 }
 }
 
@@ -116,21 +117,55 @@ function pontuacao(){ //certinho
   text(pontos1, 200, 40);
   text(pontos2, 400, 40);
   fill(255);
+  text(rebatidas, 400, 100);
+  text(yRaquete2, 400, 200);
 }
 
-function colisaoRaquete() {
-  if((xBolinha - raio) >= xRaquete1 && (xBolinha - raio) <= xRaquete1 + 10 && yBolinha >= yRaquete1 && yBolinha <= yRaquete1 + raqueteAltura){
-        velocidadexBolinha *=-1;
-    } else if((xBolinha + raio) >= xRaquete2 && (xBolinha + raio) <= xRaquete2 + 10 && yBolinha >= yRaquete2 && yBolinha <= yRaquete2 + raqueteAltura){
-      velocidadexBolinha *=-1;
+function colisaoRaquete1() {
+  colidiu =
+    collideRectCircle(xRaquete1, yRaquete1, raqueteComprimento, raqueteAltura, xBolinha, yBolinha, raio);
+  if(colidiu) {
+    velocidadexBolinha *= -1;
+    rebatidas ++;
+  }
+}
+
+function colisaoRaquete2() {
+  colidiu =
+    collideRectCircle(xRaquete2, yRaquete2, raqueteComprimento, raqueteAltura, xBolinha, yBolinha, raio);
+  if(colidiu) {
+    velocidadexBolinha *= -1;
+  }
+}
+
+function player2(){
+  if (keyCode === ENTER){
+    player2mov = true;
+}
+  if (player2mov == true){
+  if (keyIsDown('87')){
+    yRaquete2 -= 10;
+  }
+  if (keyIsDown('83')){
+    yRaquete2 += 10;
+  }
+}
+  if (player2mov == true && keyCode === BACKSPACE){
+    player2mov = false;
+  }
+}
+
+function inteligenciaArtificial(){
+  if (ia == true){
+    if (yBolinha > yRaquete2 && rebatidas >= 5){
+      yRaquete2 += 4.9;
+    } else if (yBolinha > yRaquete2) {
+      yRaquete2 += 5;
     }
-}
-
-function ia(){
-  if (keyCode === 'i') {
-    movimentoRaqueteAtivo = false;
-  } else if (keyCode === '72') {
-    movimentoRaqueteAtivo = true;
-  
-}
+    if (yBolinha < yRaquete2 && rebatidas >= 5){
+      yRaquete2 -= 4.9;
+    } else if (yBolinha < yRaquete2){
+      yRaquete2 -= 5;
+    }
+  }
 }
