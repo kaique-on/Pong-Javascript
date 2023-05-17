@@ -117,8 +117,6 @@ function pontuacao(){ //certinho
   text(pontos1, 200, 40);
   text(pontos2, 400, 40);
   fill(255);
-  text(rebatidas, 400, 100);
-  text(yRaquete2, 400, 200);
 }
 
 function colisaoRaquete1() {
