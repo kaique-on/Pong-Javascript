@@ -141,6 +141,7 @@ function colisaoRaquete2() {
 function player2(){
   if (keyCode === ENTER){
     player2mov = true;
+    ia = false;
 }
   if (player2mov == true){
   if (keyIsDown('87')){
@@ -152,6 +153,7 @@ function player2(){
 }
   if (player2mov == true && keyCode === BACKSPACE){
     player2mov = false;
+    ia = true;
   }
 }
 
